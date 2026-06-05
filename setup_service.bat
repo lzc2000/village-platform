@@ -43,13 +43,18 @@ if %errorlevel% neq 0 (
 nssm stop VillagePlatform >nul 2>&1
 nssm remove VillagePlatform confirm >nul 2>&1
 
-:: Get Python path
-for /f %%i in ('where python') do set PYTHON=%%i
+:: Use venv Python
+set VENV_PYTHON=%~dp0venv\Scripts\python.exe
+if not exist "%VENV_PYTHON%" (
+    echo ✗ 虚拟环境不存在，请先运行 deploy.bat
+    pause
+    exit /b 1
+)
 
 :: Install the service
 echo [*] 安装 VillagePlatform 服务...
 
-nssm install VillagePlatform "%PYTHON%"
+nssm install VillagePlatform "%VENV_PYTHON%"
 nssm set VillagePlatform AppDirectory "%~dp0server"
 nssm set VillagePlatform AppParameters "run_prod.py --port 80"
 nssm set VillagePlatform AppStdout "%~dp0logs\stdout.log"

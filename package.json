@@ -9,7 +9,7 @@
     "server": "cd server && python app.py",
     "client": "cd client && npm run dev",
     "build": "cd client && npm run build",
-    "prod": "cd server && python run_prod.py --port 80",
+    "prod": "venv\\Scripts\\python server\\run_prod.py --port 80",
     "deploy": "deploy.bat"
   },
   "devDependencies": {

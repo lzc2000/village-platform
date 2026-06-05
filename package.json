@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "concurrently -n server,client -c blue,green \"cd server && python app.py\" \"cd client && npm run dev\"",
     "server": "cd server && python app.py",
-    "client": "cd client && npm run dev"
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "prod": "cd server && python run_prod.py --port 80",
+    "deploy": "deploy.bat"
   },
   "devDependencies": {
     "concurrently": "^10.0.3"

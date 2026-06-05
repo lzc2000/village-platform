@@ -16,7 +16,7 @@
   <div id="authFormLogin" style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px">
     <input class="form-input" id="loginUsername" placeholder="用户名" autocomplete="username">
     <input class="form-input" id="loginPassword" type="password" placeholder="密码" autocomplete="current-password">
-    <button class="btn-save" onclick="import('./src/js/auth.js').then(m=>m.handleLogin())" style="width:100%">登 录</button>
+    <button class="btn-save" onclick="window.handleLogin()" style="width:100%">登 录</button>
   </div>
   <div id="authFormRegister" style="width:100%;max-width:320px;display:none;flex-direction:column;gap:12px">
     <input class="form-input" id="regUsername" placeholder="用户名" autocomplete="username">
@@ -25,9 +25,9 @@
     <select class="form-select" id="regRole"><option value="villager">村民</option><option value="official">村干部</option></select>
     <input class="form-input" id="regIdCard" placeholder="证件号（选填）">
     <input class="form-input" id="regAddress" placeholder="住址（选填）">
-    <button class="btn-save" onclick="import('./src/js/auth.js').then(m=>m.handleRegister())" style="width:100%">注 册</button>
+    <button class="btn-save" onclick="window.handleRegister()" style="width:100%">注 册</button>
   </div>
-  <button style="background:transparent;border:none;color:var(--primary);font-size:14px;cursor:pointer;font-family:inherit" id="authToggleText" onclick="import('./src/js/auth.js').then(m=>m.toggleAuthMode())">没有账号？去注册</button>
+  <button style="background:transparent;border:none;color:var(--primary);font-size:14px;cursor:pointer;font-family:inherit" id="authToggleText" onclick="window.toggleAuthMode()">没有账号？去注册</button>
   <div style="margin-top:16px;padding:16px;background:var(--card-bg);border-radius:12px;width:100%;max-width:320px;text-align:center;box-shadow:var(--shadow)">
     <div style="font-size:12px;color:var(--gray);margin-bottom:8px">演示账号</div>
     <div style="font-size:13px;color:var(--brown-mid);line-height:1.8">村民：zhang / 123456<br>管理员：admin / 123456</div>
@@ -241,7 +241,7 @@
         </div>
       </section>
       <section>
-        <div class="sec-hd"><div class="sec-title">用户管理</div><input class="form-input" id="adminUserSearch" placeholder="搜索用户..." style="width:140px;padding:8px 12px;font-size:12px" oninput="import('./src/js/app.js').then(m=>m.searchAdminUsers(this.value))"></div>
+        <div class="sec-hd"><div class="sec-title">用户管理</div><input class="form-input" id="adminUserSearch" placeholder="搜索用户..." style="width:140px;padding:8px 12px;font-size:12px" oninput="window.searchAdminUsers(this.value)"></div>
         <div class="card"><div class="card-list" id="adminUsersWrap"><div class="empty-state">加载中...</div></div></div>
       </section>
       <section>

@@ -95,6 +95,11 @@ export async function handleRegister() {
   }
 }
 
+// Expose to global scope for onclick handlers (used in production build)
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.toggleAuthMode = toggleAuthMode;
+
 export function handleLogout() {
   if (!confirm('确认退出登录？')) return;
   clearSession();

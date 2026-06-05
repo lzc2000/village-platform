@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>乡村村务平台</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+<!-- Auth Page -->
+<div id="authPage" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:24px;gap:20px;width:100%;max-width:420px;margin:0 auto;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.1)">
+  <div style="font-size:56px;margin-bottom:8px">🏘️</div>
+  <div style="font-size:24px;font-weight:700;color:var(--brown-dark)">乡村村务平台</div>
+  <div style="font-size:14px;color:var(--gray);margin-bottom:8px" id="authTitle">登录</div>
+  <div id="authFormLogin" style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px">
+    <input class="form-input" id="loginUsername" placeholder="用户名" autocomplete="username">
+    <input class="form-input" id="loginPassword" type="password" placeholder="密码" autocomplete="current-password">
+    <button class="btn-save" onclick="import('./src/js/auth.js').then(m=>m.handleLogin())" style="width:100%">登 录</button>
+  </div>
+  <div id="authFormRegister" style="width:100%;max-width:320px;display:none;flex-direction:column;gap:12px">
+    <input class="form-input" id="regUsername" placeholder="用户名" autocomplete="username">
+    <input class="form-input" id="regPassword" type="password" placeholder="密码（至少4位）" autocomplete="new-password">
+    <input class="form-input" id="regName" placeholder="姓名">
+    <select class="form-select" id="regRole"><option value="villager">村民</option><option value="official">村干部</option></select>
+    <input class="form-input" id="regIdCard" placeholder="证件号（选填）">
+    <input class="form-input" id="regAddress" placeholder="住址（选填）">
+    <button class="btn-save" onclick="import('./src/js/auth.js').then(m=>m.handleRegister())" style="width:100%">注 册</button>
+  </div>
+  <button style="background:transparent;border:none;color:var(--primary);font-size:14px;cursor:pointer;font-family:inherit" id="authToggleText" onclick="import('./src/js/auth.js').then(m=>m.toggleAuthMode())">没有账号？去注册</button>
+  <div style="margin-top:16px;padding:16px;background:var(--card-bg);border-radius:12px;width:100%;max-width:320px;text-align:center;box-shadow:var(--shadow)">
+    <div style="font-size:12px;color:var(--gray);margin-bottom:8px">演示账号</div>
+    <div style="font-size:13px;color:var(--brown-mid);line-height:1.8">村民：zhang / 123456<br>管理员：admin / 123456</div>
+  </div>
+</div>
+
+<div id="appMain" style="display:none;width:100%;max-width:420px;min-height:100vh;background:var(--bg);flex-direction:column;border-radius:20px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.1)">
+<div id="app">
+  <header class="header">
+    <div class="header-top">
+      <div class="user-info">
+        <div class="user-avatar">👨‍🌾</div>
+        <div>
+          <div class="user-name" id="headerName">张大叔</div>
+          <div class="user-sub">青山村 3 组</div>
+        </div>
+      </div>
+    </div>
+    <div class="header-title" id="headerTitle">村务首页</div>
+    <div class="balance-card" id="balanceCardWrap" style="display:none;">
+      <div class="balance-label">💰 当前可用积分</div>
+      <div class="balance-row">
+        <div class="balance-num" id="balanceNum">0</div>
+        <div class="balance-unit">分</div>
+      </div>
+    </div>
+  </header>
+
+  <div id="pagesContainer">
+    <!-- Page 0: Home -->
+    <div class="page page-home active" id="pageHome">
+      <section>
+        <div class="sec-title">快速导航</div>
+        <div class="home-grid">
+          <div class="home-card" onclick="switchPage(1)">
+            <div class="home-card-icon">🏪</div>
+            <div class="home-card-title">积分超市</div>
+            <div class="home-card-sub">兑换积分</div>
+          </div>
+          <div class="home-card" onclick="switchPage(2)">
+            <div class="home-card-icon">📢</div>
+            <div class="home-card-title">通知公告</div>
+            <div class="home-card-sub">最新公告</div>
+          </div>
+          <div class="home-card" onclick="switchPage(3)">
+            <div class="home-card-icon">👤</div>
+            <div class="home-card-title">个人中心</div>
+            <div class="home-card-sub">我的数据</div>
+          </div>
+          <div class="home-card" onclick="window._simulateEarn()">
+            <div class="home-card-icon">⭐</div>
+            <div class="home-card-title">赚积分</div>
+            <div class="home-card-sub">获取积分</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-title">近期活动</div>
+        <div class="card">
+          <div class="card-list">
+            <div class="card-item">
+              <div class="card-item-left">
+                <div class="card-item-icon">🗳️</div>
+                <div>
+                  <div class="card-item-title">村民议事会</div>
+                  <div class="card-item-sub">本周五举行</div>
+                </div>
+              </div>
+              <div class="card-item-right">+3分</div>
+            </div>
+            <div class="card-item">
+              <div class="card-item-left">
+                <div class="card-item-icon">🏡</div>
+                <div>
+                  <div class="card-item-title">庭院评比</div>
+                  <div class="card-item-sub">上旬评选</div>
+                </div>
+              </div>
+              <div class="card-item-right">+50分</div>
+            </div>
+            <div class="card-item">
+              <div class="card-item-left">
+                <div class="card-item-icon">📋</div>
+                <div>
+                  <div class="card-item-title">问题反馈</div>
+                  <div class="card-item-sub">欢迎参与</div>
+                </div>
+              </div>
+              <div class="card-item-right">+5分</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Page 1: Supermarket -->
+    <div class="page page-supermarket" id="pageSupermarket">
+      <section>
+        <div class="sec-hd">
+          <div class="sec-title">积分货架</div>
+          <span style="font-size:12px;color:var(--gray)">8 件好物</span>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <div style="padding: 0 16px;">
+        <button class="btn-simulate" onclick="window._simulateEarn()">
+          <i class="fa-solid fa-coins"></i> 模拟赚积分（随机 1–10 分）
+        </button>
+      </div>
+
+      <section>
+        <div class="card">
+          <div class="card-inner">
+            <div class="sec-title">我的兑换记录</div>
+          </div>
+          <div id="historyWrap"></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="card">
+          <div class="card-inner">
+            <div class="sec-title">本月积分榜</div>
+            <span style="font-size:12px;color:var(--gray)">6 月榜单</span>
+          </div>
+          <div class="card-list" id="lbList"></div>
+        </div>
+      </section>
+
+      <div class="reset-wrap">
+        <button class="btn-reset" onclick="window._simulateEarn()">
+          <i class="fa-solid fa-rotate-left"></i> 重置数据
+        </button>
+      </div>
+    </div>
+
+    <!-- Page 2: Announcements -->
+    <div class="page page-announcements" id="pageAnnouncements">
+      <section id="publishBtnWrap"></section>
+      <section id="announcementsWrap"></section>
+    </div>
+
+    <!-- Page 3: Profile -->
+    <div class="page page-profile" id="pageProfile">
+      <section>
+        <div class="profile-header">
+          <div class="profile-avatar">👨‍🌾</div>
+          <div class="profile-name" id="profileName">张大叔</div>
+          <div class="profile-sub">青山村 3 组</div>
+          <div class="profile-stats">
+            <div class="stat-box">
+              <div class="stat-num" id="profileBalance">0</div>
+              <div class="stat-label">当前积分</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num" id="profileExchanges">0</div>
+              <div class="stat-label">兑换次数</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="profile-tabs">
+          <button class="tab-btn active" onclick="switchTab(0)">个人信息</button>
+          <button class="tab-btn" onclick="switchTab(1)">兑换记录</button>
+          <button class="tab-btn" onclick="switchTab(2)">积分明细</button>
+        </div>
+
+        <div class="tab-content active" id="tab0">
+          <div class="card">
+            <div class="card-list" id="profileInfoView"></div>
+          </div>
+          <button class="btn-simulate" style="background:var(--primary);margin-top:12px" onclick="window.openEditForm()">
+            <i class="fa-solid fa-pen"></i> 编辑信息
+          </button>
+        </div>
+
+        <div class="tab-content" id="tab1">
+          <div class="card">
+            <div id="profileExchangeWrap"></div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab2">
+          <div class="card">
+            <div class="card-inner" style="padding-bottom:12px">
+              <div style="font-size:18px;font-weight:700;color:var(--brown-dark)">当前积分：<span id="pointsBalance" style="color:var(--primary)">0</span></div>
+            </div>
+            <div id="pointsDetailWrap"></div>
+          </div>
+        </div>
+
+        <button class="btn-simulate" style="background:var(--red);margin-top:12px" onclick="handleLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i> 退出登录
+        </button>
+      </section>
+    </div>
+
+    <!-- Page 4: Admin Dashboard -->
+    <div class="page page-admin" id="pageAdmin">
+      <section>
+        <div class="sec-title">管理概览</div>
+        <div class="profile-stats">
+          <div class="stat-box"><div class="stat-num" id="adminTotalUsers">0</div><div class="stat-label">注册用户</div></div>
+          <div class="stat-box"><div class="stat-num" id="adminTotalExchanges">0</div><div class="stat-label">兑换次数</div></div>
+          <div class="stat-box"><div class="stat-num" id="adminBalance">0</div><div class="stat-label">我的积分</div></div>
+          <div class="stat-box"><div class="stat-num" id="adminTotalPoints">0</div><div class="stat-label">总发放积分</div></div>
+        </div>
+      </section>
+      <section>
+        <div class="sec-hd"><div class="sec-title">用户管理</div><input class="form-input" id="adminUserSearch" placeholder="搜索用户..." style="width:140px;padding:8px 12px;font-size:12px" oninput="import('./src/js/app.js').then(m=>m.searchAdminUsers(this.value))"></div>
+        <div class="card"><div class="card-list" id="adminUsersWrap"><div class="empty-state">加载中...</div></div></div>
+      </section>
+      <section>
+        <div class="sec-hd"><div class="sec-title">商品管理</div></div>
+        <div class="card"><div class="card-list" id="adminProductsWrap"><div class="empty-state">加载中...</div></div></div>
+      </section>
+      <section>
+        <div class="sec-hd"><div class="sec-title">个人设置</div></div>
+        <button class="btn-simulate" style="background:var(--red);margin-bottom:0" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> 退出登录</button>
+      </section>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-item active" onclick="switchPage(0)">
+      <i class="fa-solid fa-house"></i><span>村务首页</span>
+    </div>
+    <div class="nav-item" onclick="switchPage(1)">
+      <i class="fa-solid fa-store"></i><span>积分超市</span>
+    </div>
+    <div class="nav-item" onclick="switchPage(2)">
+      <i class="fa-solid fa-bell"></i><span>通知公告</span>
+    </div>
+    <div class="nav-item" onclick="switchPage(3)">
+      <i class="fa-solid fa-circle-user"></i><span>个人中心</span>
+    </div>
+  </nav>
+</div>
+
+
+<!-- Admin: Adjust Balance Modal -->
+<div class="modal-overlay" id="adjustBalanceOverlay" onclick="window._onAdjustOverlayClick(event)">
+  <div class="modal-box" style="border-radius:24px">
+    <div style="font-size:19px;font-weight:700;color:var(--brown-dark);margin-bottom:20px">调整积分 - <span id="adjustUserName"></span></div>
+    <div style="text-align:center;color:var(--gray);margin-bottom:16px">当前积分：<span id="adjustCurrentBalance" style="font-weight:700;color:var(--primary)"></span></div>
+    <input type="hidden" id="adjustUserId">
+    <div class="form-group"><label class="form-label">调整金额（正数加、负数减）</label><input type="number" class="form-input" id="adjustDelta" placeholder="例如：50 或 -20"></div>
+    <div class="form-group"><label class="form-label">调整原因</label><input type="text" class="form-input" id="adjustReason" placeholder="填写调整原因"></div>
+    <div class="btn-row"><button class="btn-cancel" onclick="window._closeAdjustBalance()">取消</button><button class="btn-save" onclick="window._doAdjustBalance()">确认调整</button></div>
+  </div>
+</div>
+
+<!-- Admin: Edit Product Modal -->
+<div class="modal-overlay" id="editProductOverlay" onclick="window._onEditProductOverlayClick(event)">
+  <div class="modal-box" style="border-radius:24px">
+    <div style="font-size:19px;font-weight:700;color:var(--brown-dark);margin-bottom:20px">编辑商品</div>
+    <input type="hidden" id="editProductId">
+    <div class="form-group"><label class="form-label">商品名称</label><input type="text" class="form-input" id="editProductName"></div>
+    <div class="form-group"><label class="form-label">所需积分</label><input type="number" class="form-input" id="editProductPoints"></div>
+    <div class="form-group"><label class="form-label">库存</label><input type="number" class="form-input" id="editProductStock"></div>
+    <div class="btn-row"><button class="btn-cancel" onclick="window._closeEditProduct()">取消</button><button class="btn-save" onclick="window._saveEditProduct()">保存</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Exchange Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="window._onOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-emoji" id="mEmoji"></div>
+    <div class="modal-title" id="mTitle"></div>
+    <div class="modal-desc" id="mDesc"></div>
+    <div class="modal-pts-info">
+      <div class="modal-pts-cost" id="mCost"></div>
+      <div class="modal-pts-remain" id="mRemain"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="window._closeExchangeModal()">取消</button>
+      <button class="btn-confirm" id="mConfirm">确认兑换</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="editModalOverlay" onclick="window._onEditOverlayClick(event)">
+  <div class="modal-box" style="border-radius:24px">
+    <div style="font-size:19px;font-weight:700;color:var(--brown-dark);margin-bottom:20px">编辑个人信息</div>
+    <div class="form-group">
+      <label class="form-label">姓名</label>
+      <input type="text" class="form-input" id="editName" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label class="form-label">身份</label>
+      <select class="form-select" id="editRole">
+        <option value="villager">村民</option>
+        <option value="official">村干部</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">证件号</label>
+      <input type="text" class="form-input" id="editID" maxlength="18">
+    </div>
+    <div class="form-group">
+      <label class="form-label">住址</label>
+      <input type="text" class="form-input" id="editAddr" maxlength="50">
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="window.closeEditForm()">取消</button>
+      <button class="btn-save" onclick="window.saveEditForm()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publish Notification Modal -->
+<div class="modal-overlay" id="publishModalOverlay" onclick="window._onPublishOverlayClick(event)">
+  <div class="modal-box" style="border-radius:24px">
+    <div style="font-size:19px;font-weight:700;color:var(--brown-dark);margin-bottom:20px">发布通知</div>
+    <div class="form-group">
+      <label class="form-label">通知标题</label>
+      <input type="text" class="form-input" id="pubTitle" maxlength="30" placeholder="输入标题">
+    </div>
+    <div class="form-group">
+      <label class="form-label">通知内容</label>
+      <textarea class="form-textarea" id="pubContent" placeholder="输入通知内容"></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="window._closePublishForm()">取消</button>
+      <button class="btn-save" onclick="window._publishNotification()">发布</button>
+    </div>
+  </div>
+</div>
+
+<!-- Announcement Detail Modal -->
+<div class="modal-overlay" id="detailModalOverlay" onclick="window._onDetailOverlayClick(event)">
+  <div class="modal-box" style="border-radius:24px;padding:24px">
+    <div style="font-size:18px;font-weight:700;color:var(--brown-dark);margin-bottom:8px" id="detailTitle"></div>
+    <div class="announcement-detail-time" id="detailTime"></div>
+    <div class="announcement-detail" id="detailContent"></div>
+    <div class="btn-row" id="detailBtns"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initAuth, handleLogin, handleRegister, handleLogout, toggleAuthMode } from './src/js/auth.js';
+  import { initApp, searchAdminUsers } from './src/js/app.js';
+  import { switchPage, switchTab } from './src/js/router.js';
+
+  // Expose to global scope for onclick handlers
+  window.switchPage = switchPage;
+  window.switchTab = switchTab;
+  window.handleLogout = handleLogout;
+  window.searchAdminUsers = searchAdminUsers;
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const loggedIn = await initAuth();
+    if (loggedIn) {
+      await initApp();
+      switchPage(0);
+    }
+  });
+
+  window.addEventListener('auth-ready', async () => {
+    await initApp();
+    switchPage(0);
+  });
+</script>
+</div><!-- /appMain -->
+</body>
+</html>
+
+
+

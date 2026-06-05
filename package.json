@@ -1,0 +1,15 @@
+{
+  "name": "village-platform",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"cd server && python app.py\" \"cd client && npm run dev\"",
+    "server": "cd server && python app.py",
+    "client": "cd client && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
